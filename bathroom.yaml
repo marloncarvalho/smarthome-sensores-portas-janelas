@@ -1,0 +1,62 @@
+esphome:
+  name: banheiro_social
+  platform: ESP32
+  board: esp32doit-devkit-v1
+          
+captive_portal:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: Banheiro Social
+    password: !secret ap_password
+
+i2c:
+  sda: 21
+  scl: 22
+     
+api:
+
+logger:
+
+ota:
+    
+sensor:
+  - platform: bh1750
+    name: "Banheiro Social - Luminosidade"
+    address: 0x23
+    update_interval: 5s
+
+  - platform: hdc1080
+    temperature:
+      name: "Banheiro Social - Temperatura"
+      filters:
+        - median:
+            window_size: 7
+            send_every: 4
+            send_first_at: 3
+    humidity:
+      name: "Banheiro Social - Umidade"
+      filters:
+        - median:
+            window_size: 7
+            send_every: 4
+            send_first_at: 3
+    update_interval: 5s
+
+binary_sensor:
+  - platform: gpio
+    pin: GPIO15 
+    name: "Banheiro Social - Sensor Presenca"
+    device_class: motion
+    filters:
+      - delayed_off: 60s
+
+  - platform: gpio
+    pin: 
+      number: GPIO04
+      mode: INPUT_PULLUP
+    name: "Banheiro Social - Porta"
+    device_class: door  
