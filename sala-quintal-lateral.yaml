@@ -1,0 +1,64 @@
+esphome:
+  name: sala_sensores_quintal_lateral
+  platform: ESP32
+  board: esp32doit-devkit-v1
+          
+captive_portal:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: Sala-SQL
+    password: !secret ap_password
+
+i2c:
+  sda: 21
+  scl: 22
+
+api:
+
+logger:
+
+ota:
+    
+sensor:
+
+  - platform: bh1750
+    name: "Sala - Sensor de Luminosidade 1"
+    address: 0x23
+    update_interval: 5s
+
+  - platform: hdc1080
+    temperature:
+      name: "Sala - Sensor de Temperatura 1"
+      filters:
+        - median:
+            window_size: 7
+            send_every: 4
+            send_first_at: 3
+    humidity:
+      name: "Sala - Sensor de Umidade 1"
+      filters:
+        - median:
+            window_size: 7
+            send_every: 4
+            send_first_at: 3
+    update_interval: 5s
+
+binary_sensor:
+
+  - platform: gpio
+    pin: GPIO15 
+    name: "Sala - Sensor de Presenca - Quintal Lateral"
+    device_class: motion
+    filters:
+      - delayed_off: 60s
+
+  - platform: gpio
+    pin: 
+      number: GPIO04
+      mode: INPUT_PULLUP
+    name: "Sala - Porta do Quintal Lateral"
+    device_class: door  
